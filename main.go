@@ -2,24 +2,21 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
+
+	"lightningeverywhere_backend/internal/eshop"
 )
 
 func main() {
-	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	//	fmt.Fprint(w, "Hello, World!")
-	//})
-
-	//http.ListenAndServe(":8080", nil)
-
-	// Setup MongoDB
-	//store := eshop.NewMongoStore("mongodb://localhost:27017", "yourdbname", "eshops")
+	// Choose store implementation — memory for now
+	store := eshop.NewMemoryStore()
 
 	// Setup routes
-	//mux := http.NewServeMux()
-	//mux.HandleFunc("/api/eshops", eshop.MakeHandler(store))
+	mux := http.NewServeMux()
+	mux.Handle("/api/eshops", eshop.MakeHandler(store)) // all methods (GET, POST, etc.)
 
-	// Optional: Wrap with middleware
+	// Optional: Middleware (basic logger)
 	//handler := loggingMiddleware(mux)
 
 	// Start server
