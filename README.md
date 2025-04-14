@@ -14,3 +14,8 @@ Delete Docker image
 ```
 sudo docker rm lightning-backend
 ```
+
+Run docker-compose with MongoDB
+```
+docker-compose up --build
+```

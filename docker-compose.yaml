@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend-net
+    environment:
+      MONGO_INITDB_DATABASE: mydb
+
+  backend:
+    build: .
+    container_name: go-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    networks:
+      - backend-net
+    environment:
+      PORT: 8080
+      MONGO_URI: mongodb://mongo:27017
+      DB_NAME: mydb
+
+volumes:
+  mongo-data:
+
+networks:
+  backend-net:
+    driver: bridge
