@@ -2,30 +2,32 @@ package merchant
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
-
-	"github.com/go-chi/chi/v5"
 )
 
-type Handler struct {
-	store Store
+func MakeHandler(store Store) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			GetAll(w, r, store)
+		case http.MethodPost:
+			Create(w, r, store)
+		case http.MethodPut:
+			Update(w, r, store)
+		case http.MethodDelete:
+			Delete(w, r, store)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	}
 }
 
-func NewHandler(store Store) *Handler {
-	return &Handler{store}
-}
-
-func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Get("/", h.GetAll)
-	r.Get("/{id}", h.GetByID)
-	r.Post("/", h.Create)
-	r.Put("/{id}", h.Update)
-	r.Delete("/{id}", h.Delete)
-}
-
-func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
-	merchants, err := h.store.GetAll()
+func GetAll(w http.ResponseWriter, r *http.Request, store Store) {
+	w.Header().Set("Content-Type", "application/json")
+	merchants, err := store.GetAll(r.Context())
 	if err != nil {
 		http.Error(w, "failed to fetch merchants", http.StatusInternalServerError)
 		return
@@ -33,48 +35,73 @@ func (h *Handler) GetAll(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(merchants)
 }
 
-func (h *Handler) GetByID(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	merchant, err := h.store.GetByID(id)
+func Create(w http.ResponseWriter, r *http.Request, store Store) {
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "merchant not found", http.StatusNotFound)
+		http.Error(w, "failed to read body", http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode(merchant)
-}
+	defer r.Body.Close()
 
-func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var m Merchant
-	if err := json.NewDecoder(r.Body).Decode(&m); err != nil {
-		http.Error(w, "invalid input", http.StatusBadRequest)
+	if err := json.Unmarshal(body, &m); err != nil {
+		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if err := h.store.Create(m); err != nil {
-		http.Error(w, "could not create merchant", http.StatusInternalServerError)
+
+	if err := store.Create(r.Context(), &m); err != nil {
+		http.Error(w, fmt.Sprintf("failed to create merchant: %v", err), http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(m)
 }
 
-func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+func Update(w http.ResponseWriter, r *http.Request, store Store) {
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
 	var m Merchant
 	if err := json.NewDecoder(r.Body).Decode(&m); err != nil {
-		http.Error(w, "invalid input", http.StatusBadRequest)
+		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if err := h.store.Update(id, m); err != nil {
-		http.Error(w, "could not update merchant", http.StatusInternalServerError)
+
+	if err := store.Update(r.Context(), id, &m); err != nil {
+		http.Error(w, fmt.Sprintf("failed to update merchant: %v", err), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(m)
 }
 
-func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	if err := h.store.Delete(id); err != nil {
-		http.Error(w, "could not delete merchant", http.StatusInternalServerError)
+func Delete(w http.ResponseWriter, r *http.Request, store Store) {
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	if err := store.Delete(r.Context(), id); err != nil {
+		http.Error(w, fmt.Sprintf("failed to delete merchant: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
