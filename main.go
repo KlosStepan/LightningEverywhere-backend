@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"lightningeverywhere_backend/internal/eshop"
+	"lightningeverywhere_backend/internal/merchant"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -20,11 +21,13 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 func main() {
 	// Choose store implementation — memory for now
-	var store eshop.Store = eshop.NewMemoryStore()
+	var store1 eshop.Store = eshop.NewMemoryStore()
+	var store2 merchant.Store = merchant.NewMemoryStore()
 
 	// Setup routes
 	var mux *http.ServeMux = http.NewServeMux()
-	mux.Handle("/api/eshops", eshop.MakeHandler(store)) // all methods (GET, POST, etc.)
+	mux.Handle("/api/eshops", eshop.MakeHandler(store1)) // all methods (GET, POST, etc.)
+	mux.Handle("/api/merchants", merchant.MakeHandler(store2))
 
 	// Optional: Middleware (basic logger)
 	var handler http.Handler = loggingMiddleware(mux)

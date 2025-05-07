@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 )
 
 func MakeHandler(store Store) http.HandlerFunc {
@@ -27,7 +26,7 @@ func MakeHandler(store Store) http.HandlerFunc {
 
 func GetAll(w http.ResponseWriter, r *http.Request, store Store) {
 	w.Header().Set("Content-Type", "application/json")
-	merchants, err := store.GetAll(r.Context())
+	merchants, err := store.List(r.Context())
 	if err != nil {
 		http.Error(w, "failed to fetch merchants", http.StatusInternalServerError)
 		return
@@ -49,7 +48,7 @@ func Create(w http.ResponseWriter, r *http.Request, store Store) {
 		return
 	}
 
-	if err := store.Create(r.Context(), &m); err != nil {
+	if err := store.Add(r.Context(), &m); err != nil {
 		http.Error(w, fmt.Sprintf("failed to create merchant: %v", err), http.StatusInternalServerError)
 		return
 	}
@@ -60,14 +59,9 @@ func Create(w http.ResponseWriter, r *http.Request, store Store) {
 }
 
 func Update(w http.ResponseWriter, r *http.Request, store Store) {
-	idStr := r.URL.Query().Get("id")
-	if idStr == "" {
+	id := r.URL.Query().Get("id")
+	if id == "" {
 		http.Error(w, "id is required", http.StatusBadRequest)
-		return
-	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
 
@@ -87,14 +81,9 @@ func Update(w http.ResponseWriter, r *http.Request, store Store) {
 }
 
 func Delete(w http.ResponseWriter, r *http.Request, store Store) {
-	idStr := r.URL.Query().Get("id")
-	if idStr == "" {
+	id := r.URL.Query().Get("id")
+	if id == "" {
 		http.Error(w, "id is required", http.StatusBadRequest)
-		return
-	}
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
 
