@@ -27,6 +27,10 @@ sudo docker-compose up --build -d
 Connect via `MongoDB Compass` to MongoDB with following url (setup must be up).
 ```
 mongodb://localhost:27017
+```  
+Other stuff
+```
+sudo docker ps
 ```
 ## TODO Roadmap
 In order to fully run Lightning Everywhere backend as this service we need to implement multiple features and components.  

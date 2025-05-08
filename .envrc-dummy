@@ -1,2 +1,4 @@
 # Copy and fill out as .envrc, then `direnv allow` and rebuild or run
 export PORT=
+export MONGO_URI=
+export DB_NAME=

@@ -8,6 +8,10 @@ import (
 
 	"lightningeverywhere_backend/internal/eshop"
 	"lightningeverywhere_backend/internal/merchant"
+
+	"lightningeverywhere_backend/internal/db"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func loggingMiddleware(next http.Handler) http.Handler {
@@ -20,6 +24,11 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	// Connect to MongoDB
+	var mongoDB *mongo.Database = db.ConnectMongo()
+	//_ = mongoDB // TODO: pass to actual store
+	log.Printf("MongoDB initialized for database: %s", mongoDB.Name())
+
 	// Choose store implementation — memory for now
 	var store1 eshop.Store = eshop.NewMemoryStore()
 	var store2 merchant.Store = merchant.NewMemoryStore()
