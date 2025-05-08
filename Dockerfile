@@ -1,5 +1,5 @@
 # Use Go 1.24 release candidate based on Debian Bullseye
-FROM golang:1.24-rc-bullseye
+FROM golang:1.24-bullseye
 
 # Install git (needed for some go packages)
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*

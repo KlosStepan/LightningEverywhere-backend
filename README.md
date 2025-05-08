@@ -19,7 +19,15 @@ Run docker-compose with MongoDB
 ```
 docker-compose up --build
 ```
-
+## Local setup with `docker-compose`   
+Rebuild and start detached.
+```
+sudo docker-compose up --build -d
+```  
+Connect via `MongoDB Compass` to MongoDB with following url (setup must be up).
+```
+mongodb://localhost:27017
+```
 ## TODO Roadmap
 In order to fully run Lightning Everywhere backend as this service we need to implement multiple features and components.  
 These things are: 
