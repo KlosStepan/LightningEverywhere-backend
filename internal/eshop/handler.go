@@ -11,7 +11,12 @@ func MakeHandler(store Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			GetAll(w, r, store)
+			id := r.URL.Query().Get("id")
+			if id != "" {
+				Read(w, r, store) // 👈 Read one
+			} else {
+				ReadAll(w, r, store)
+			}
 		case http.MethodPost:
 			Create(w, r, store)
 		case http.MethodPut:
@@ -24,9 +29,9 @@ func MakeHandler(store Store) http.HandlerFunc {
 	}
 }
 
-func GetAll(w http.ResponseWriter, r *http.Request, store Store) {
+func ReadAll(w http.ResponseWriter, r *http.Request, store Store) {
 	w.Header().Set("Content-Type", "application/json")
-	eshops, err := store.GetAll(r.Context())
+	eshops, err := store.ReadAll(r.Context())
 	if err != nil {
 		http.Error(w, "failed to get eshops", http.StatusInternalServerError)
 		return
@@ -56,6 +61,23 @@ func Create(w http.ResponseWriter, r *http.Request, store Store) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(e)
+}
+
+func Read(w http.ResponseWriter, r *http.Request, store Store) {
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	eshop, err := store.Read(r.Context(), id)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to get eshop: %v", err), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(eshop)
 }
 
 func Update(w http.ResponseWriter, r *http.Request, store Store) {

@@ -6,9 +6,9 @@ import (
 )
 
 type Store interface {
-	List(ctx context.Context) ([]Merchant, error)
-	GetByID(ctx context.Context, id string) (*Merchant, error)
-	Add(ctx context.Context, m *Merchant) error
+	ReadAll(ctx context.Context) ([]Merchant, error)
+	Create(ctx context.Context, m *Merchant) error
+	Read(ctx context.Context, id string) (*Merchant, error)
 	Update(ctx context.Context, id string, m *Merchant) error
 	Delete(ctx context.Context, id string) error
 }
@@ -26,8 +26,7 @@ func NewMemoryStore() Store {
 	return m
 }
 
-// List returns all merchants in the store
-func (m *memoryStore) List(ctx context.Context) ([]Merchant, error) {
+func (m *memoryStore) ReadAll(ctx context.Context) ([]Merchant, error) {
 	result := make([]Merchant, 0, len(m.data))
 	for _, merchant := range m.data {
 		result = append(result, merchant)
@@ -35,8 +34,8 @@ func (m *memoryStore) List(ctx context.Context) ([]Merchant, error) {
 	return result, nil
 }
 
-// GetByID retrieves a merchant by its ID from the store
-func (m *memoryStore) GetByID(ctx context.Context, id string) (*Merchant, error) {
+// Read retrieves a merchant by its ID from the store
+func (m *memoryStore) Read(ctx context.Context, id string) (*Merchant, error) {
 	merchant, ok := m.data[id]
 	if !ok {
 		return nil, errors.New("merchant not found")
@@ -45,7 +44,7 @@ func (m *memoryStore) GetByID(ctx context.Context, id string) (*Merchant, error)
 }
 
 // Add adds a new merchant to the store
-func (m *memoryStore) Add(ctx context.Context, merchant *Merchant) error {
+func (m *memoryStore) Create(ctx context.Context, merchant *Merchant) error {
 	if merchant.Properties.ID == "" {
 		return errors.New("merchant ID is required")
 	}

@@ -2,20 +2,23 @@ package eshop
 
 import (
 	"context"
+	"errors"
 	"fmt"
 )
+
+type Store interface {
+	ReadAll(ctx context.Context) ([]Eshop, error)
+	Create(ctx context.Context, e *Eshop) error
+	Read(ctx context.Context, id string) (*Eshop, error) // ✅ Added method to interface
+	Update(ctx context.Context, id string, e *Eshop) error
+	Delete(ctx context.Context, id string) error
+}
 
 type memoryStore struct {
 	data map[string]Eshop
 }
 
-type Store interface {
-	GetAll(ctx context.Context) ([]Eshop, error)
-	Create(ctx context.Context, e *Eshop) error
-	Update(ctx context.Context, id string, e *Eshop) error
-	Delete(ctx context.Context, id string) error
-}
-
+// NewMemoryStore creates and returns a new memory-based store, initializing it with mock eshops
 func NewMemoryStore() Store {
 	m := &memoryStore{data: make(map[string]Eshop)}
 	for _, e := range MockEshops() {
@@ -24,12 +27,20 @@ func NewMemoryStore() Store {
 	return m
 }
 
-func (m *memoryStore) GetAll(ctx context.Context) ([]Eshop, error) {
+func (m *memoryStore) ReadAll(ctx context.Context) ([]Eshop, error) {
 	result := make([]Eshop, 0, len(m.data))
 	for _, e := range m.data {
 		result = append(result, e)
 	}
 	return result, nil
+}
+
+func (m *memoryStore) Read(ctx context.Context, id string) (*Eshop, error) {
+	e, ok := m.data[id]
+	if !ok {
+		return nil, errors.New("eshop not found")
+	}
+	return &e, nil
 }
 
 func (m *memoryStore) Create(ctx context.Context, e *Eshop) error {
