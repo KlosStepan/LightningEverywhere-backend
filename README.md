@@ -32,6 +32,13 @@ Other stuff
 ```
 sudo docker ps
 ```
+
+## Database migrations with Go
+We use [migrate](https://aur.archlinux.org/packages/migrate) in Go.  
+We should run it like
+```
+migrate -path db/migrations -database "mongodb://localhost:27017/mydb" up
+```
 ## TODO Roadmap
 In order to fully run Lightning Everywhere backend as this service we need to implement multiple features and components.  
 These things are: 
