@@ -9,7 +9,7 @@ import (
 	"lightningeverywhere_backend/internal/eshop"
 	"lightningeverywhere_backend/internal/merchant"
 
-	"lightningeverywhere_backend/internal/db"
+	"lightningeverywhere_backend/db"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
