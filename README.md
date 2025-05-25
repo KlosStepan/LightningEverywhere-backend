@@ -15,14 +15,14 @@ Delete Docker image
 sudo docker rm lightning-backend
 ```
 
-Run docker-compose with MongoDB
+Run docker compose with MongoDB
 ```
-docker-compose up --build
+docker compose up --build
 ```
-## Local setup with `docker-compose`   
+## Local setup with `docker compose`   
 Rebuild and start detached.
 ```
-sudo docker-compose up --build -d
+sudo docker compose up --build -d
 ```  
 Connect via `MongoDB Compass` to MongoDB with following url (setup must be up).
 ```
