@@ -31,7 +31,15 @@ mongodb://localhost:27017
 Other stuff
 ```
 sudo docker ps
-```
+```  
+### Containerized Local Development
+docker-compose.yaml consists of:
+- mongo
+- go-backend (this repo)
+- minio (TODO)
+### Forecasted Deployment  
+We will use managed Mongo and managed storage with S3 interface.  
+Then we will use appropriate CI/CD with different .env parametrization to deploy go-backend into Kubernetes. 
 
 ## Database migrations with Go
 We use [migrate](https://aur.archlinux.org/packages/migrate) in Go.  
