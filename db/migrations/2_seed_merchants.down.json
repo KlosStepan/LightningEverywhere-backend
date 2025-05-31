@@ -1,0 +1,3 @@
+[
+  { "delete": "merchants", "deletes": [ { "q": {}, "limit": 0 } ] }
+]

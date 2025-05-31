@@ -41,13 +41,16 @@ docker-compose.yaml consists of:
 We will use managed Mongo and managed storage with S3 interface.  
 Then we will use appropriate CI/CD with different .env parametrization to deploy go-backend into Kubernetes. 
 
-## Database migrations with Go
-We use [migrate](https://aur.archlinux.org/packages/migrate) in Go.  
-We should run it as follows.
+## Database migrations run
+We manage MongoDB database migrations using [migrate](https://aur.archlinux.org/packages/migrate) on Arch Linux. Our migrations are defined in JSON format, which are executed in MongoDB via db.`runCommand()`.  
+
+We run migration as showed in the attached snippet.  
 ```
-migrate -path db/migrations -database "mongodb://localhost:27017/mydb" up
+[stepo@archlinux LightningEverywhere-backend]$ migrate -path db/migrations -database "mongodb://localhost:27017/mydb" up
+1/u initial (122.823423ms)
+2/u seed_merchants (212.237493ms)
 ```  
-Migrate is de-facto migration standard and can be read about in the [official documentation](https://pkg.go.dev/github.com/golang-migrate/migrate/v4@v4.18.3#section-readme).
+Migrate is de-facto migration standard and can be read about in the [official documentation](https://pkg.go.dev/github.com/golang-migrate/migrate/v4@v4.18.3#section-readme). Another resource is [golang-migrate/migrate](https://github.com/golang-migrate/migrate/blob/v4.18.3/database/mongodb/README.md) with specific MongoDB + Go duo description.
 ## TODO Roadmap
 In order to fully run Lightning Everywhere backend as this service we need to implement multiple features and components.  
 These things are: 
