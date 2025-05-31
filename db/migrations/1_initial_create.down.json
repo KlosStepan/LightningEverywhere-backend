@@ -1,0 +1,6 @@
+[
+  { "drop": "merchants" },
+  { "drop": "eshops" },
+  { "drop": "reports" },
+  { "drop": "likes" }
+]

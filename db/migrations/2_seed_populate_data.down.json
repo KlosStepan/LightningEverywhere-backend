@@ -1,0 +1,18 @@
+[
+  {
+    "delete": "merchants",
+    "deletes": [ { "q": {}, "limit": 0 } ]
+  },
+  {
+    "delete": "eshops",
+    "deletes": [ { "q": {}, "limit": 0 } ]
+  },
+  {
+    "delete": "likes",
+    "deletes": [ { "q": {}, "limit": 0 } ]
+  },
+  {
+    "delete": "reports",
+    "deletes": [ { "q": {}, "limit": 0 } ]
+  }
+]

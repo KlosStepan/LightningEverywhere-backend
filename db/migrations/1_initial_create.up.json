@@ -1,0 +1,6 @@
+[
+  { "create": "merchants" },
+  { "create": "eshops" },
+  { "create": "reports" },
+  { "create": "likes" }
+]

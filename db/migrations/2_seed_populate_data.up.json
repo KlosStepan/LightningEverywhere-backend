@@ -67,5 +67,80 @@
         }
       }
     ]
+  },
+  {
+    "insert": "eshops",
+    "documents": [
+      {
+        "id": "54ae38db-2a48-42a9-a569-e9e48ea90d46",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "visible": true,
+        "name": "Alza.cz",
+        "description": "Největší prodejce elektroniky v ČR",
+        "logo": "https://firebasestorage.googleapis.com/v0/b/lightning-everywhere.firebasestorage.app/o/eshop-logos%2FLfcSSXzFXubrti5lnb4P-alza.png?alt=media&token=e5f83d6d-f313-4ef0-8f6d-ae7f5606d1e3",
+        "country": "CZ",
+        "url": "https://www.alza.cz"
+      },
+      {
+        "id": "e20d248d-69cc-482d-9ce1-0a15cbe3bc2a",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "visible": true,
+        "name": "Kafe za bitcoin",
+        "description": "Kafe, které si za peníze nekoupíš",
+        "logo": "https://firebasestorage.googleapis.com/v0/b/lightning-everywhere.firebasestorage.app/o/eshop-logos%2FcnPF09Tf04V4CC3UVSbx-Screenshot_20250321_011958.png?alt=media&token=621f1835-4676-4446-805b-8eca4264c6c9",
+        "country": "CZ",
+        "url": "https://www.kafezabitcoin.cz/"
+      },
+      {
+        "id": "b25efd17-3a50-4513-9dad-af47bbcfb687",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "visible": true,
+        "name": "Bitcoinovej Kanál ",
+        "description": "Kicomuv merch Kicomuv merch Kicomuv merch",
+        "logo": "https://firebasestorage.googleapis.com/v0/b/lightning-everywhere.firebasestorage.app/o/eshop-logos%2FthNQXwffucpx8oS3OakB-Screenshot_20250321_012223.png?alt=media&token=c2cebca5-f985-447a-9759-0936b8778e41",
+        "country": "CZ",
+        "url": "https://bitcoinovejkanal.cz/eshop/"
+      }
+    ]
+  },
+  {
+    "insert": "likes",
+    "documents": [
+      {
+        "id": "d8e5f6b3-6e5b-4e1f-aacd-7ad67f3b8ee8",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "entityId": "63977929-fc0e-4695-9a04-3156e9d24c54",
+        "entityType": "merchant",
+        "createdAt": "2025-05-31T10:00:00Z"
+      },
+      {
+        "id": "d75c49f1-409f-4f91-8e13-c215c64c3c91",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "entityId": "54ae38db-2a48-42a9-a569-e9e48ea90d46",
+        "entityType": "eshop",
+        "createdAt": "2025-05-31T10:05:00Z"
+      }
+    ]
+  },
+  {
+    "insert": "reports",
+    "documents": [
+      {
+        "id": "b13f1b4d-3eb4-409b-854d-9b1b2d9d5f2e",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "entityId": "63977929-fc0e-4695-9a04-3156e9d24c54",
+        "entityType": "merchant",
+        "reason": "Inappropriate content",
+        "createdAt": "2025-05-31T10:15:00Z"
+      },
+      {
+        "id": "9b0f50ea-f53b-4b8e-9cb0-9fc0143425b1",
+        "owner": "EM6jd7CDU4PdHgF7LJTTvyMPNrJ3",
+        "entityId": "b25efd17-3a50-4513-9dad-af47bbcfb687",
+        "entityType": "eshop",
+        "reason": "Spam or scam",
+        "createdAt": "2025-05-31T10:20:00Z"
+      }
+    ]
   }
 ]
