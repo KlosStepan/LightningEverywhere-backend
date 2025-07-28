@@ -60,4 +60,11 @@ These things are:
 - Use S3 (compatible) storage for photo uploads on DigitalOcean [Spaces Object Storage](https://www.digitalocean.com/products/spaces).
 - We will use [Minio](https://github.com/minio/minio) (as S3 compatible substitute on localhost) for Docker compose local setup.
 
-These cloud services first will be implemented to run in `DigitalOcean` infrastructure. We might migrate then to `AWS` later on. Web application runs in DOKS (DigitalOcean Kubernetes), might be easily migrated to Amazon EKS (AWS Elastic Kubernetes).
+These cloud services first will be implemented to run in `DigitalOcean` infrastructure. We might migrate then to `AWS` later on. Web application runs in DOKS (DigitalOcean Kubernetes), might be easily migrated to Amazon EKS (AWS Elastic Kubernetes).  
+
+## Backend programming
+- auth e-mail/password (send "click it's me" e-mail) for now, then SSO Google interoperably
+- simple HTTP CRUD: e-shops, merchants, profile
+- Minio S3 stuff for images handling
+- make sure Mongo migrations (if empty -> run...if populated -> don't run), maybe store some version of database in the database
+- session syncing via Redis
