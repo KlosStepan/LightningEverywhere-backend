@@ -15,7 +15,7 @@ Delete Docker image
 sudo docker rm lightning-backend
 ```
 
-Run docker compose with MongoDB
+## Run docker compose of application locally
 ```
 docker compose up --build
 ```
@@ -68,3 +68,11 @@ These cloud services first will be implemented to run in `DigitalOcean` infrastr
 - Minio S3 stuff for images handling
 - make sure Mongo migrations (if empty -> run...if populated -> don't run), maybe store some version of database in the database
 - session syncing via Redis
+
+## We also had to do on Arch to build->run
+```
+sudo usermod -aG docker $USER
+newgrp docker
+
+docker compose up --build
+```
