@@ -1,6 +1,10 @@
 version: '3.8'
 
 services:
+
+  # This has to run pre-deployment
+  # Either: in the Kubernetes cluster / or be managed
+  # MODIF/PREP: database migrations, VOLUME
   mongo:
     image: mongo
     container_name: mongo
@@ -13,6 +17,8 @@ services:
     environment:
       MONGO_INITDB_DATABASE: ${DB_NAME}
 
+  # This Docker image will be deployed via CI/CD into Kubernetes cluster
+  # Should run database migrations, either migrate / or do nothing (if empty build)
   backend:
     build: .
     container_name: go-backend
@@ -32,7 +38,12 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY}
       S3_BUCKET: ${S3_BUCKET}
       S3_REGION: ${S3_REGION}
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
 
+  # This has to run  pre-deployment
+  # Either: in the Kubernetes cluster / or be managed
+  # MODIF/PREP: user/passwd, VOLUME
   minio:
     image: minio/minio
     container_name: minio
