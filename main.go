@@ -35,6 +35,11 @@ func main() {
 
 	// Setup routes
 	var mux *http.ServeMux = http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok","message":"Welcome to Lightning Everywhere backend"}`))
+	})
 	mux.Handle("/api/eshops", eshop.MakeHandler(store1)) // all methods (GET, POST, etc.)
 	mux.Handle("/api/merchants", merchant.MakeHandler(store2))
 
