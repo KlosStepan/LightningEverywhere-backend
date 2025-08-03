@@ -14,11 +14,11 @@ type Geometry struct {
 }
 
 type MerchantFields struct {
-	base.BaseEntity                 // ID, Owner, Visible, Name, Description
-	Images          []string        `json:"images"`
-	Address         MerchantAddress `json:"address"`
-	Tags            []string        `json:"tags"`
-	Socials         []Social        `json:"socials"`
+	base.BaseEntity `bson:",inline"` // ID, Owner, Visible, Name, Description
+	Images          []string         `json:"images"`
+	Address         MerchantAddress  `json:"address"`
+	Tags            []string         `json:"tags"`
+	Socials         []Social         `json:"socials"`
 }
 
 type MerchantAddress struct {

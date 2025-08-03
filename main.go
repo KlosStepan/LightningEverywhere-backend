@@ -31,7 +31,7 @@ func main() {
 
 	// Choose store implementation — memory for now
 	var store1 eshop.Store = eshop.NewMongoStore(mongoDB)
-	var store2 merchant.Store = merchant.NewMemoryStore()
+	var store2 merchant.Store = merchant.NewMongoStore(mongoDB)
 
 	// Setup routes
 	var mux *http.ServeMux = http.NewServeMux()

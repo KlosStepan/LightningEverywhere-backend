@@ -2,7 +2,10 @@ package merchant
 
 import (
 	"context"
-	"errors"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Store interface {
@@ -13,60 +16,67 @@ type Store interface {
 	Delete(ctx context.Context, id string) error
 }
 
-type memoryStore struct {
-	data map[string]Merchant
+// mongoStore implements Store using MongoDB
+type mongoStore struct {
+	coll *mongo.Collection
 }
 
-// NewMemoryStore creates and returns a new memory-based store, initializing it with mock merchants
-func NewMemoryStore() Store {
-	m := &memoryStore{data: make(map[string]Merchant)}
-	for _, merchant := range MockMerchants() {
-		m.data[merchant.Properties.ID] = merchant
+// NewMongoStore creates a new MongoDB-backed store for merchants
+func NewMongoStore(db *mongo.Database) Store {
+	return &mongoStore{
+		coll: db.Collection("merchants"),
 	}
-	return m
 }
 
-func (m *memoryStore) ReadAll(ctx context.Context) ([]Merchant, error) {
-	result := make([]Merchant, 0, len(m.data))
-	for _, merchant := range m.data {
-		result = append(result, merchant)
+func (m *mongoStore) ReadAll(ctx context.Context) ([]Merchant, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	cursor, err := m.coll.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
 	}
-	return result, nil
+	defer cursor.Close(ctx)
+
+	var merchants []Merchant
+	if err := cursor.All(ctx, &merchants); err != nil {
+		return nil, err
+	}
+	return merchants, nil
 }
 
-// Read retrieves a merchant by its ID from the store
-func (m *memoryStore) Read(ctx context.Context, id string) (*Merchant, error) {
-	merchant, ok := m.data[id]
-	if !ok {
-		return nil, errors.New("merchant not found")
+func (m *mongoStore) Read(ctx context.Context, id string) (*Merchant, error) {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	var merchant Merchant
+	err := m.coll.FindOne(ctx, bson.M{"properties.id": id}).Decode(&merchant)
+	if err != nil {
+		return nil, err
 	}
 	return &merchant, nil
 }
 
-// Add adds a new merchant to the store
-func (m *memoryStore) Create(ctx context.Context, merchant *Merchant) error {
-	if merchant.Properties.ID == "" {
-		return errors.New("merchant ID is required")
-	}
-	m.data[merchant.Properties.ID] = *merchant
-	return nil
+func (m *mongoStore) Create(ctx context.Context, merchant *Merchant) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := m.coll.InsertOne(ctx, merchant)
+	return err
 }
 
-// Update updates an existing merchant in the store by its ID
-func (m *memoryStore) Update(ctx context.Context, id string, merchant *Merchant) error {
-	if _, ok := m.data[id]; !ok {
-		return errors.New("merchant not found")
-	}
-	merchant.Properties.ID = id // enforce ID consistency
-	m.data[id] = *merchant
-	return nil
+func (m *mongoStore) Update(ctx context.Context, id string, merchant *Merchant) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := m.coll.UpdateOne(ctx, bson.M{"properties.id": id}, bson.M{"$set": merchant})
+	return err
 }
 
-// Delete removes a merchant from the store by its ID
-func (m *memoryStore) Delete(ctx context.Context, id string) error {
-	if _, ok := m.data[id]; !ok {
-		return errors.New("merchant not found")
-	}
-	delete(m.data, id)
-	return nil
+func (m *mongoStore) Delete(ctx context.Context, id string) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	_, err := m.coll.DeleteOne(ctx, bson.M{"properties.id": id})
+	return err
 }
