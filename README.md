@@ -76,3 +76,9 @@ newgrp docker
 
 docker compose up --build
 ```
+
+# Pinging endpoints via shell script
+```
+touch test_endpoints.sh
+./test_endpoints.sh
+```
