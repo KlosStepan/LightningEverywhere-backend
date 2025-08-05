@@ -2,8 +2,8 @@
 
 BASE_URL="http://localhost:8080"
 
-echo "Getting all e-shops:"
-curl -s http://localhost:8080/api/eshops/ | jq
+echo "🔍 GET /"
+curl -s -X GET "$BASE_URL/" | jq
 echo ""
 
 echo "🔍 GET /api/eshops"
