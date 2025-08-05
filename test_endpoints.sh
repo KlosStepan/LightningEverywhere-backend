@@ -7,10 +7,10 @@ curl -s http://localhost:8080/api/eshops/ | jq
 echo ""
 
 echo "🔍 GET /api/eshops"
-curl -s -X GET "$BASE_URL/api/eshops/" | jq
+curl -s -X GET "$BASE_URL/api/eshops" | jq
 echo ""
 
 echo "🔍 GET /api/merchants"
-curl -s -X GET "$BASE_URL/api/merchants/" | jq
+curl -s -X GET "$BASE_URL/api/merchants" | jq
 echo ""
 
